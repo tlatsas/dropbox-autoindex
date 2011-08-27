@@ -1,0 +1,11 @@
+* add proper comments
+* cleanup debug print messages
+* use argparse to supply command line arguments
+    * add arguments to override template
+    * add arguments for verbose output
+    * ...
+* maybe make regex more "general"
+* maybe store user dropbox id in a local config file
+* create css classes based on file mimetypes so that users can format pages with css
+  * document css classes
+* check for existing 'index.html' files and prompt before ovewrite
