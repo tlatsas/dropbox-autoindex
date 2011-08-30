@@ -9,7 +9,7 @@ base_url = "http://dl.dropbox.com/u"
 index_file = "index.html"
 default_public = os.path.expanduser("~/Dropbox/Public")
 uid = "37339790"
-ignore = ['.dropbox']
+ignore = ['.dropbox', index_file]
 
 template = """<!DOCTYPE html>
 <head>
