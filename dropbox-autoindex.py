@@ -8,7 +8,7 @@ import re
 base_url = "http://dl.dropbox.com/u"
 index_file = "index.html"
 default_public = os.path.expanduser("~/Dropbox/Public")
-uid = ""
+uid = "37339790"
 ignore = ['.dropbox']
 
 template = """<!DOCTYPE html>
@@ -26,7 +26,7 @@ template = """<!DOCTYPE html>
 </body>
 </html>
 """
-
+verbose = True
 
 def build_index(template, html, path):
     builder = re.compile("{% listing %}", re.I)
@@ -41,31 +41,41 @@ def build_index(template, html, path):
 
 def traverse_path(cwd, parent=[]):
     html = []
-
-    #cwd = os.path.abspath(cwd)
-
-    #print 'inspecting folder %s' % cwd
+    vprint("Inspecting folder %s ..." % cwd)
 
     for item in os.listdir(cwd):
-        #full_path = os.path.abspath(os.path.join(cwd, item))
         full_path = os.path.join(cwd, item)
+
         if os.path.isdir(full_path):
             parent.append(item)
-            html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>"""
-                    % (base_url, uid, '/'.join(parent), index_file, item))
+            html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
+                    (base_url, uid, '/'.join(parent), index_file, item))
             traverse_path(full_path, parent)
             parent.pop()
+
         else:
             if item in ignore:
                 continue
-            #print '    found FILE with name %s' % item
-            html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>"""
-                    % (base_url, uid, '/'.join(parent), item, item))
+            html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
+                    (base_url, uid, '/'.join(parent), item, item))
 
-    #print 'DONE inspecting folder %s' % cwd
-    #print
     build_index(template, html, cwd)
-    #print "\n\n%s\n\n" % '\n'.join(html)
+    vprint("=> Generated %s for folder '%s'." % (index_file, cwd))
+    return True
+
+
+# print only if verbose flag is set (http://bit.ly/p8Tckd)
+if verbose:
+    def vprint(*args):
+        # Print each argument separately so caller doesn't need to
+        # stuff everything to be printed into a single string
+        for arg in args:
+           print arg,
+        print
+else:
+    vprint = lambda *a: None      # do-nothing function
+
+
 
 try:
     public_dir = os.path.abspath(os.path.expanduser(sys.argv[1]))
