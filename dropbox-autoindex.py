@@ -44,7 +44,8 @@ def traverse_path(cwd, parent=[]):
     vprint("Inspecting folder %s ..." % cwd)
 
     if len(parent) > 0:
-        html.append("""<li><a href="%s/%s/%s/%s">..</a></li> """ % (base_url, uid, '/'.join(parent[:-1]), index_file))
+        html.append("""<li><a href="%s/%s/%s/%s">..</a></li> """ %
+                (base_url, uid, '/'.join(parent[:-1]), index_file))
 
     for item in os.listdir(cwd):
         full_path = os.path.join(cwd, item)
