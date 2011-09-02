@@ -61,11 +61,10 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def build_index(template, html, path):
+def build_index(html, path):
     """Replace special tags in template files and save as html files.
 
     Keyword arguments:
-    template -- a string containing the html template
     html -- the code to replace the listing tag of the template
     path -- path to save the html file
 
@@ -76,7 +75,7 @@ def build_index(template, html, path):
     html_file = os.path.join(path, index_file)
     fp = open(html_file, 'w')
 
-    contents = builder.sub(''.join(html), template)
+    contents = builder.sub(''.join(html), arg.template)
     fp.write(contents)
     fp.close()
 
@@ -114,7 +113,7 @@ def traverse_path(cwd, parent=[]):
             html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
                     (base_url, uid, '/'.join(parent), item, item))
 
-    build_index(template, html, cwd)
+    build_index(html, cwd)
     vprint("=> Generated %s for folder '%s'." % (index_file, cwd))
     return True
 
