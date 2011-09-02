@@ -98,6 +98,10 @@ def traverse_path(cwd, parent=[]):
                 (base_url, arg.uid, '/'.join(parent[:-1]), arg.index))
 
     for item in os.listdir(cwd):
+        # ignore files/folders matching entries in exclude list
+        if item in arg.exclude:
+            continue
+
         full_path = os.path.join(cwd, item)
 
         if os.path.isdir(full_path):
@@ -108,8 +112,6 @@ def traverse_path(cwd, parent=[]):
             parent.pop()
 
         else:
-            if item in arg.exclude:
-                continue
             html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
                     (base_url, arg.uid, '/'.join(parent), item, item))
 
