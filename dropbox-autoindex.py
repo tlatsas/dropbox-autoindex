@@ -7,10 +7,6 @@ import re
 import argparse
 
 base_url = "http://dl.dropbox.com/u"
-index_file = "index.html"
-default_public = os.path.expanduser("~/Dropbox/Public")
-uid = "37339790"
-ignore = ['.dropbox', index_file]
 
 template = """<!DOCTYPE html>
 <head>
@@ -55,6 +51,9 @@ def parse_arguments():
 
     parser.add_argument('-i', '--interactive', action='store_true',
         default=False, help='prompt before overwrite')
+
+    parser.add_argument('-x', '--exclude', action='append',
+        dest='ignore', default=[], help='prompt before overwrite')
 
     parser.add_argument('uid',
         help='dropbox user id')
@@ -117,6 +116,8 @@ else:
     vprint = lambda *a: None      # do-nothing function
 
 public_dir = os.path.abspath(os.path.expanduser(arg.public))
+
+arg.ignore = [arg.index, '.dropbox']
 
 traverse_path(public_dir)
 
