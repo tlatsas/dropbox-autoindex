@@ -52,8 +52,8 @@ def parse_arguments():
     parser.add_argument('-i', '--interactive', action='store_true',
         default=False, help='prompt before overwrite')
 
-    parser.add_argument('-x', '--exclude', action='append',
-        dest='ignore', default=[], help='prompt before overwrite')
+    parser.add_argument('-x', '--exclude', nargs='*', default=[],
+        help='exclude files/folders from html')
 
     parser.add_argument('uid',
         help='dropbox user id')
@@ -117,7 +117,8 @@ else:
 
 public_dir = os.path.abspath(os.path.expanduser(arg.public))
 
-arg.ignore = [arg.index, '.dropbox']
+arg.exclude.append(arg.index)
+arg.exclude.append('.dropbox')
 
 traverse_path(public_dir)
 
