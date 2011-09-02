@@ -62,6 +62,15 @@ def parse_arguments():
 
 
 def build_index(template, html, path):
+    """Replace special tags in template files and save as html files.
+
+    Keyword arguments:
+    template -- a string containing the html template
+    html -- the code to replace the listing tag of the template
+    path -- path to save the html file
+
+    """
+
     builder = re.compile("{% listing %}", re.I)
 
     html_file = os.path.join(path, index_file)
@@ -73,9 +82,18 @@ def build_index(template, html, path):
 
 
 def traverse_path(cwd, parent=[]):
+    """Recursively traverse dropbox public dir and generate html files
+
+    Keyword arguments:
+    cwd -- current working directory, traverse this path for files and folders
+    parent -- list of parent folder names (default: [])
+
+    """
+
     html = []
     vprint("Inspecting folder %s ..." % cwd)
 
+    # create the "back" button
     if len(parent) > 0:
         html.append("""<li><a href="%s/%s/%s/%s">..</a></li> """ %
                 (base_url, uid, '/'.join(parent[:-1]), index_file))
@@ -101,7 +119,9 @@ def traverse_path(cwd, parent=[]):
     return True
 
 
+#---[ main ]----------------------------------------------------------------
 
+# parse from command line
 arg = parse_arguments()
 
 # print only if verbose flag is set (http://bit.ly/p8Tckd)
@@ -115,11 +135,14 @@ if arg.verbose:
 else:
     vprint = lambda *a: None      # do-nothing function
 
+# generate dropbox public directory
 public_dir = os.path.abspath(os.path.expanduser(arg.public))
 
+# exclude the index files and dropbox special file
 arg.exclude.append(arg.index)
 arg.exclude.append('.dropbox')
 
+# walk dropbox public folder and generate the html files
 traverse_path(public_dir)
 
 sys.exit(0)
