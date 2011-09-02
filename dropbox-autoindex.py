@@ -143,6 +143,9 @@ public_dir = os.path.abspath(os.path.expanduser(arg.public))
 arg.exclude.append(arg.index)
 arg.exclude.append('.dropbox')
 
+if arg.template is None:
+    arg.template = template
+
 # walk dropbox public folder and generate the html files
 traverse_path(public_dir)
 
