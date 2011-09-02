@@ -72,7 +72,7 @@ def build_index(html, path):
 
     builder = re.compile("{% listing %}", re.I)
 
-    html_file = os.path.join(path, index_file)
+    html_file = os.path.join(path, arg.index)
     fp = open(html_file, 'w')
 
     contents = builder.sub(''.join(html), arg.template)
@@ -95,7 +95,7 @@ def traverse_path(cwd, parent=[]):
     # create the "back" button
     if len(parent) > 0:
         html.append("""<li><a href="%s/%s/%s/%s">..</a></li> """ %
-                (base_url, uid, '/'.join(parent[:-1]), index_file))
+                (base_url, arg.uid, '/'.join(parent[:-1]), arg.index))
 
     for item in os.listdir(cwd):
         full_path = os.path.join(cwd, item)
@@ -103,18 +103,18 @@ def traverse_path(cwd, parent=[]):
         if os.path.isdir(full_path):
             parent.append(item)
             html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
-                    (base_url, uid, '/'.join(parent), index_file, item))
+                    (base_url, arg.uid, '/'.join(parent), arg.index, item))
             traverse_path(full_path, parent)
             parent.pop()
 
         else:
-            if item in ignore:
+            if item in arg.exclude:
                 continue
             html.append("""<li><a href="%s/%s/%s/%s">%s</a></li>""" %
-                    (base_url, uid, '/'.join(parent), item, item))
+                    (base_url, arg.uid, '/'.join(parent), item, item))
 
     build_index(html, cwd)
-    vprint("=> Generated %s for folder '%s'." % (index_file, cwd))
+    vprint("=> Generated %s for folder '%s'." % (arg.index, cwd))
     return True
 
 
