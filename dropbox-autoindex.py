@@ -4,6 +4,7 @@
 import os
 import sys
 import re
+import argparse
 
 base_url = "http://dl.dropbox.com/u"
 index_file = "index.html"
@@ -26,7 +27,40 @@ template = """<!DOCTYPE html>
 </body>
 </html>
 """
-verbose = True
+
+
+def parse_arguments():
+    """parse command line arguments"""
+    parser = argparse.ArgumentParser(
+            prog = 'dropbox-autoindex',
+            description="Small and simple utility that automates index \
+                         generation for dropbox public folder ")
+
+    parser.add_argument('--version', action='version', version='%(prog)s 0.5')
+
+    parser.add_argument('-p', '--public', default='~/Dropbox/Public',
+        help='path to dropbox public folder')
+
+    parser.add_argument('--index', default='index.html',
+        help='filename of index file')
+
+    parser.add_argument('--title', default='my dropbox',
+        help='html title')
+
+    parser.add_argument('-t', '--template',
+        help='path to template file')
+
+    parser.add_argument('-v', '--verbose', action='store_true', default=False,
+        help='explain what is being done')
+
+    parser.add_argument('-i', '--interactive', action='store_true',
+        default=False, help='prompt before overwrite')
+
+    parser.add_argument('uid',
+        help='dropbox user id')
+
+    return parser.parse_args()
+
 
 def build_index(template, html, path):
     builder = re.compile("{% listing %}", re.I)
@@ -68,8 +102,11 @@ def traverse_path(cwd, parent=[]):
     return True
 
 
+
+arg = parse_arguments()
+
 # print only if verbose flag is set (http://bit.ly/p8Tckd)
-if verbose:
+if arg.verbose:
     def vprint(*args):
         # Print each argument separately so caller doesn't need to
         # stuff everything to be printed into a single string
@@ -79,13 +116,8 @@ if verbose:
 else:
     vprint = lambda *a: None      # do-nothing function
 
-
-
-try:
-    public_dir = os.path.abspath(os.path.expanduser(sys.argv[1]))
-except:
-    public_dir = default_public
+public_dir = os.path.abspath(os.path.expanduser(arg.public))
 
 traverse_path(public_dir)
-sys.exit(0)
 
+sys.exit(0)
