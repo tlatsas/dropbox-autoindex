@@ -69,15 +69,19 @@ def build_index(html, path):
     path -- path to save the html file
 
     """
+    html_file = os.path.join(path, arg.index)
+    if prompt_overwrite(html_file) is False:
+        vprint("=> Skipping...")
+        return
 
     builder = re.compile("{% listing %}", re.I)
-
-    html_file = os.path.join(path, arg.index)
-    fp = open(html_file, 'w')
-
     contents = builder.sub(''.join(html), arg.template)
+
+    fp = open(html_file, 'w')
     fp.write(contents)
     fp.close()
+
+    vprint("=> Generated %s for folder '%s'." % (arg.index, path))
 
 
 def traverse_path(cwd, parent=[]):
@@ -116,7 +120,6 @@ def traverse_path(cwd, parent=[]):
                     (base_url, arg.uid, '/'.join(parent), item, item))
 
     build_index(html, cwd)
-    vprint("=> Generated %s for folder '%s'." % (arg.index, cwd))
     return True
 
 
@@ -135,6 +138,28 @@ if arg.verbose:
         print
 else:
     vprint = lambda *a: None      # do-nothing function
+
+
+# prompt user before overwritting index files in interactive mode
+if arg.interactive:
+    def prompt_overwrite(f):
+        """Prompt user to overwrite file in given path."""
+        if os.path.exists(f):
+            while True:
+                sys.stdout.write("File exists, overwrite? [y/n/q]: ")
+                choice = raw_input().lower()
+                if choice in ('y', 'yes'):
+                    return True
+                elif choice in ('n', 'no'):
+                    return False
+                elif choice in ('q', 'quit'):
+                    vprint("Quit...")
+                    sys.exit(1)
+        else:
+            return True
+else:
+    def prompt_overwrite(f):
+        return True
 
 # generate dropbox public directory
 public_dir = os.path.abspath(os.path.expanduser(arg.public))
