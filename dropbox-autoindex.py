@@ -24,7 +24,6 @@ template = """<!DOCTYPE html>
 </html>
 """
 
-
 def parse_arguments():
     """parse command line arguments"""
     parser = argparse.ArgumentParser(
@@ -138,7 +137,6 @@ if arg.verbose:
         print
 else:
     vprint = lambda *a: None      # do-nothing function
-
 
 # prompt user before overwritting index files in interactive mode
 if arg.interactive:
